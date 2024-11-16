@@ -1,16 +1,24 @@
 version: 'latest'
 
 services:
-  mongodb:
+  mongo:
     image: mongo:latest
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: baonguyen
       MONGO_INITDB_ROOT_PASSWORD: 123
     volumes:
       - mongo:/mongo/data
 
+  cache:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6378:6379"
+    volumes:
+      - cache-data:/cache/data
 volumes:
   mongo:
+  cache-data:

@@ -4,14 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const mongoose = require('./config/databaseConfiguration');
-const jwtAuthenticationFilter = require('./middlewares/JWTAuthenticationFilter');
+const mongoose = require('./src/config/databaseConfiguration');
+const jwtAuthenticationFilter = require('./src/middlewares/JWTAuthenticationFilter');
+const assureTokenFilter = require('./src/middlewares/assureTokenFilter');
+const loggingFilter = require('./src/config/loggingFilter');
 
-const loggingFilter = require('./config/loggingFilter');
-
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
+const indexRouter = require('./src/routes/index');
+const usersRouter = require('./src/routes/users');
+const authRouter = require('./src/routes/auth');
+const testRouter = require('./src/routes/testRoute');
 
 const domain = '/api/v1'
 const app = express();
@@ -33,6 +34,9 @@ app.use(jwtAuthenticationFilter.authenticate('jwt', {session: false}));
 app.use(domain + '/index', indexRouter);
 app.use(domain + '/user', usersRouter);
 
+app.use(assureTokenFilter);
+
+app.use(domain + '/test', testRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
